@@ -336,6 +336,18 @@ def api_lookup():
 
 @app.errorhandler(404)
 def not_found(e): return render_template('404.html'),404
-
+    
 init_db()
 if __name__=='__main__': app.run(host='0.0.0.0',port=int(os.environ.get('PORT',5000)),debug=False)
+# PostgreSQL এর জন্য psycopg2 বা SQLAlchemy ব্যবহার করা থাকলে:
+@app.route('/admin-users-count-9988') # /admin-users-count-9988 এটি আপনার গোপন লিংক
+def admin_users_count():
+    try:
+        # যদি psycopg2 দিয়ে সরাসরি SQL কুয়েরি চালান:
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users;") # 'users' টেবিলের নাম যা আপনার DB-তে আছে
+        count = cursor.fetchone()[0]
+        cursor.close()
+        return f"<h2>Total Registered Users: {count}</h2>"
+    except Exception as e:
+        return f"Error fetching count: {str(e)}"
